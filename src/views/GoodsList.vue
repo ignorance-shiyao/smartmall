@@ -14,25 +14,33 @@
                             <use xlink:href="#icon-arrow-short"></use>
                         </svg>
                     </a>
-                    <a href="javascript:void(0)" class="filterby stopPop">Filter by</a>
+                    <a href="javascript:void(0)"
+                       class="filterby stopPop"
+                       @click="showFilterPop">
+                        Filter by
+                    </a>
                 </div>
                 <div class="accessory-result">
                     <!-- filter -->
-                    <div class="filter stopPop" id="filter">
+                    <div class="filter stopPop"
+                         id="filter"
+                         :class="{'filterby-show':filterBy}">
                         <dl class="filter-price">
                             <dt>Price:</dt>
-                            <dd><a href="javascript:void(0)">All</a></dd>
                             <dd>
-                                <a href="javascript:void(0)">0 - 100</a>
+                                <a href="javascript:void(0)"
+                                   :class="{ 'cur' : priceChecked==='all'}"
+                                   @click="priceChecked='all'">All
+                                </a>
                             </dd>
-                            <dd>
-                                <a href="javascript:void(0)">100 - 500</a>
-                            </dd>
-                            <dd>
-                                <a href="javascript:void(0)">500 - 1000</a>
-                            </dd>
-                            <dd>
-                                <a href="javascript:void(0)">1000 - 2000</a>
+                            <dd v-for="(price,index) in priceFilter"
+                                :key="price">
+                                <a href="javascript:void(0)"
+                                   :class="{'cur':priceChecked===index}"
+                                   @click="setPriceFilter(index)"
+                                >
+                                    {{price.startPrice}}- {{price.endPrice}}
+                                </a>
                             </dd>
                         </dl>
                     </div>
@@ -42,7 +50,7 @@
                             <ul>
                                 <li v-for="item in goodsList" :key="item.productId">
                                     <div class="pic">
-                                        <a href="#"><img :src="'/static/'+item.productImage" alt=""></a>
+                                        <a href="#"><img v-lazy="'/static/'+item.productImage" alt=""></a>
                                     </div>
                                     <div class="main">
                                         <div class="name">{{item.productName}}</div>
@@ -58,6 +66,7 @@
                 </div>
             </div>
         </div>
+        <div class="md-overlay" v-show="overLayFlag" @click="closeFilterPop"></div>
         <nav-footer></nav-footer>
     </div>
 </template>
@@ -74,7 +83,28 @@ export default {
   name: 'GoodsList',
   data () {
     return {
-      goodsList: []
+      goodsList: [],
+      priceFilter: [
+        {
+          startPrice: '0',
+          endPrice: '500'
+        },
+        {
+          startPrice: '500',
+          endPrice: '1000'
+        },
+        {
+          startPrice: '1000',
+          endPrice: '2000'
+        },
+        {
+          startPrice: '2000',
+          endPrice: '3000'
+        }
+      ],
+      priceChecked: 'all',
+      filterBy: false,
+      overLayFlag: false
     }
   },
   components: {
@@ -88,6 +118,18 @@ export default {
         const res = result.data
         this.goodsList = res.result
       })
+    },
+    showFilterPop () {
+      this.filterBy = true
+      this.overLayFlag = true
+    },
+    closeFilterPop () {
+      this.filterBy = false
+      this.overLayFlag = false
+    },
+    setPriceFilter (index) {
+      this.priceChecked = index
+      this.closeFilterPop()
     }
   },
   mounted () {

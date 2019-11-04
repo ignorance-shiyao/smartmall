@@ -13,7 +13,7 @@ const portfinder = require('portfinder')
 
 const HOST = process.env.HOST
 const PORT = process.env.PORT && Number(process.env.PORT)
-const goodsData = require('../public/goods.json')
+const goodsData = require('../static/mock/goods.json')
 
 const devWebpackConfig = merge(baseWebpackConfig, {
   module: {

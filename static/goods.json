@@ -1,0 +1,54 @@
+{
+  "status": "0",
+  "msg": "",
+  "result": [
+    {
+      "productId": "100001",
+      "productName": "魅族16s pro",
+      "productPrice": 2699,
+      "productImage": "meizu16spro.jpg"
+    },
+    {
+      "productId": "100002",
+      "productName": "音响",
+      "productPrice": 399,
+      "productImage": "1.jpg"
+    },
+    {
+      "productId": "100003",
+      "productName": "蓝牙耳机",
+      "productPrice": 99,
+      "productImage": "2.jpg"
+    },
+    {
+      "productId": "100004",
+      "productName": "耳罩式蓝牙耳机",
+      "productPrice": 199,
+      "productImage": "3.jpg"
+    } ,
+    {
+      "productId": "100005",
+      "productName": "魅族16s pro",
+      "productPrice": 2699,
+      "productImage": "meizu16spro.jpg"
+    },
+    {
+      "productId": "100006",
+      "productName": "音响",
+      "productPrice": 399,
+      "productImage": "1.jpg"
+    },
+    {
+      "productId": "100007",
+      "productName": "蓝牙耳机",
+      "productPrice": 99,
+      "productImage": "2.jpg"
+    },
+    {
+      "productId": "100008",
+      "productName": "耳罩式蓝牙耳机",
+      "productPrice": 199,
+      "productImage": "3.jpg"
+    }
+  ]
+}
