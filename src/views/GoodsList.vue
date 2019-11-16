@@ -8,8 +8,10 @@
             <div class="container">
                 <div class="filter-nav">
                     <span class="sortby">Sort by:</span>
-                    <a href="javascript:void(0)" class="default cur">Default</a>
-                    <a href="javascript:void(0)" class="price">Price
+                    <a href="javascript:void(0)" class="default cur">
+                        Default</a>
+                    <a @click="sortGoods" href="javascript:;" class="price">
+                        Price
                         <svg class="icon icon-arrow-short">
                             <use xlink:href="#icon-arrow-short"></use>
                         </svg>
@@ -51,12 +53,12 @@
                                 <li v-for="(item,index) in goodsList" :key="index">
                                     <div class="pic">
                                         <a href="#">
-                                            <img v-lazy="'/static/'+item.productImage" alt="" >
+                                            <img v-lazy="'/static/'+item.productImage" alt="">
                                         </a>
                                     </div>
                                     <div class="main">
                                         <div class="name">{{item.productName}}</div>
-                                        <div class="price">{{item.productPrice}}</div>
+                                        <div class="price">{{item.salePrice}}</div>
                                         <div class="btn-area">
                                             <a href="javascript:;" class="btn btn--m">加入购物车</a>
                                         </div>
@@ -86,6 +88,9 @@ export default {
   data () {
     return {
       goodsList: [],
+      sortFlag: true,
+      page: 1,
+      pageSize: 8,
       priceFilter: [
         {
           startPrice: '0',
@@ -117,7 +122,12 @@ export default {
   methods: {
     getGoodsList () {
       // axios.get('/static/mock/goods.json').then((result) => {
-      axios.get('/goods').then((result) => {
+      var param = {
+        page: this.page,
+        pageSize: this.pageSize,
+        sort: this.sortFlag ? 1 : -1
+      }
+      axios.get('/goods', {params: param}).then((result) => {
         const res = result.data
         this.goodsList = res.result.list
       })
@@ -133,11 +143,15 @@ export default {
     setPriceFilter (index) {
       this.priceChecked = index
       this.closeFilterPop()
+    },
+    sortGoods () {
+      this.sortFlag = !this.sortFlag
+      this.page = 1
+      this.getGoodsList()
     }
   },
   mounted () {
     this.getGoodsList()
   }
-
 }
 </script>

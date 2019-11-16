@@ -18,7 +18,15 @@ mongoose.connection.on('disconnected', () => {
 router.get('/', (req, res, next) => {
   // res.render('index', {title: 'Express'})
   // res.send('hello,goods list.')
-  Goods.find({}, (err, doc) => {
+  let page = parseInt(req.param('page'))
+  let pageSize = parseInt(req.param('pageSize'))
+  let sort = req.param('sort')
+  let skip = (page - 1) * pageSize
+
+  let params = {}
+  let goodsModel = Goods.find(params).skip(skip).limit(pageSize)
+  goodsModel.sort({'salePrice': sort})
+  goodsModel.exec({}, (err, doc) => {
     if (err) {
       res.json({
         status: '1',
