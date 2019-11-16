@@ -34,7 +34,7 @@
                                 </a>
                             </dd>
                             <dd v-for="(price,index) in priceFilter"
-                                :key="price">
+                                :key="index">
                                 <a href="javascript:void(0)"
                                    :class="{'cur':priceChecked===index}"
                                    @click="setPriceFilter(index)"
@@ -48,9 +48,11 @@
                     <div class="accessory-list-wrap">
                         <div class="accessory-list col-4">
                             <ul>
-                                <li v-for="item in goodsList" :key="item.productId">
+                                <li v-for="(item,index) in goodsList" :key="index">
                                     <div class="pic">
-                                        <a href="#"><img v-lazy="'/static/'+item.productImage" alt=""></a>
+                                        <a href="#">
+                                            <img v-lazy="'/static/'+item.productImage" alt="" >
+                                        </a>
                                     </div>
                                     <div class="main">
                                         <div class="name">{{item.productName}}</div>
@@ -114,9 +116,10 @@ export default {
   },
   methods: {
     getGoodsList () {
-      axios.get('/static/mock/goods.json').then((result) => {
+      // axios.get('/static/mock/goods.json').then((result) => {
+      axios.get('/goods').then((result) => {
         const res = result.data
-        this.goodsList = res.result
+        this.goodsList = res.result.list
       })
     },
     showFilterPop () {
