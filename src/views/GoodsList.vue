@@ -10,7 +10,7 @@
                     <span class="sortby">Sort by:</span>
                     <a href="javascript:void(0)" class="default cur">
                         Default</a>
-                    <a @click="sortGoods" href="javascript:;" class="price">
+                    <a @click="sortGoods()" href="javascript:void(0)" class="price">
                         Price
                         <svg class="icon icon-arrow-short">
                             <use xlink:href="#icon-arrow-short"></use>
@@ -32,7 +32,7 @@
                             <dd>
                                 <a href="javascript:void(0)"
                                    :class="{ 'cur' : priceChecked==='all'}"
-                                   @click="priceChecked='all'">All
+                                   @click="setPriceFilter('all')">All
                                 </a>
                             </dd>
                             <dd v-for="(price,index) in priceFilter"
@@ -60,11 +60,18 @@
                                         <div class="name">{{item.productName}}</div>
                                         <div class="price">{{item.salePrice}}</div>
                                         <div class="btn-area">
-                                            <a href="javascript:;" class="btn btn--m">加入购物车</a>
+                                            <a href="javascript:;" class="btn btn--m" @click="addCart(item.productId)">加入购物车</a>
                                         </div>
                                     </div>
                                 </li>
                             </ul>
+                            <div class="view-more-normal"
+                                 v-infinite-scroll="loadMore"
+                                 infinite-scroll-disabled="busy"
+                                 infinite-scroll-distance="20">
+                                <img src="./../../static/loading-svg/loading-spokes.svg" v-show="loading"
+                                     alt="loading...">
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -91,9 +98,16 @@ export default {
       sortFlag: true,
       page: 1,
       pageSize: 8,
+      busy: true,
+      priceLevel: this.priceChecked,
+      loading: true,
       priceFilter: [
         {
           startPrice: '0',
+          endPrice: '100'
+        },
+        {
+          startPrice: '100',
           endPrice: '500'
         },
         {
@@ -106,7 +120,7 @@ export default {
         },
         {
           startPrice: '2000',
-          endPrice: '3000'
+          endPrice: '5000'
         }
       ],
       priceChecked: 'all',
@@ -120,16 +134,29 @@ export default {
     NavBread
   },
   methods: {
-    getGoodsList () {
+    getGoodsList (flag) {
       // axios.get('/static/mock/goods.json').then((result) => {
       var param = {
         page: this.page,
         pageSize: this.pageSize,
-        sort: this.sortFlag ? 1 : -1
+        sort: this.sortFlag ? 1 : -1,
+        priceLevel: this.priceChecked
       }
+      this.loading = false
       axios.get('/goods', {params: param}).then((result) => {
-        const res = result.data
-        this.goodsList = res.result.list
+        let res = result.data
+        this.loading = true
+        if (res.status === '0') {
+          if (flag) {
+            this.goodsList = this.goodsList.concat(res.result.list)
+            this.busy = res.result.count === 0
+          } else {
+            this.goodsList = res.result.list
+            this.busy = false
+          }
+        } else {
+          this.goodsList = []
+        }
       })
     },
     showFilterPop () {
@@ -142,12 +169,31 @@ export default {
     },
     setPriceFilter (index) {
       this.priceChecked = index
-      this.closeFilterPop()
+      this.page = 1
+      this.getGoodsList()
     },
     sortGoods () {
       this.sortFlag = !this.sortFlag
       this.page = 1
       this.getGoodsList()
+    },
+    loadMore () {
+      this.busy = true
+      setTimeout(() => {
+        this.page++
+        this.getGoodsList(true)
+      }, 400)
+    },
+    addCart (productId) {
+      axios.post('/goods/addCart', {
+        productId: productId
+      }).then((res) => {
+        if (res.status === 1) {
+          alert('add success')
+        } else {
+          alert('msg:' + res.message)
+        }
+      })
     }
   },
   mounted () {
